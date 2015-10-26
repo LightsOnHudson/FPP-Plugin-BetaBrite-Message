@@ -1,5 +1,34 @@
 <?php
+function hex_dump($data, $newline="\n")
+{
+  static $from = '';
+  static $to = '';
 
+  static $width = 16; # number of bytes per line
+
+  static $pad = '.'; # padding for non-visible characters
+
+  if ($from==='')
+  {
+    for ($i=0; $i<=0xFF; $i++)
+    {
+      $from .= chr($i);
+      $to .= ($i >= 0x20 && $i <= 0x7E) ? chr($i) : $pad;
+    }
+  }
+
+  $hex = str_split(bin2hex($data), $width*2);
+  $chars = str_split(strtr($data, $from, $to), $width);
+
+$HEX_OUT ="";
+  $offset = 0;
+  foreach ($hex as $i => $line)
+  {
+    $HEX_OUT.= sprintf('%6X',$offset).' : '.implode(' ', str_split($line,2)) . ' [' . $chars[$i] . ']';
+    $offset += $width;
+  }
+return $HEX_OUT;
+}
 function createBetaBriteEventFile() {
 
 	global $eventDirectory,$pluginDirectory,$pluginName,$scriptDirectory;
@@ -140,6 +169,29 @@ function printPluginsInstalled()
 	echo "</select>";
 }
 
+function printPixelsPerSecond($ELEMENT, $PIXELS_PER_SECOND)
+
+
+{
+
+        global $PLUGINS,$pluginDirectory;
+
+        $MAX_PIXELS_PER_SECOND = 20;
+
+        echo "<select name=\"".$ELEMENT."\">";
+
+
+        for($i=0;$i<=$MAX_PIXELS_PER_SECOND-1;$i++) {
+
+                        if($i == $PIXELS_PER_SECOND) {
+
+                                 echo "<option selected value=\"" . $i. "\">" . $i. "</option>";
+                       } else {
+                        echo "<option value=\"" . $i. "\">" . $i. "</option>";
+                        }
+        }
+        echo "</select>";
+}
 function printFontSizes($ELEMENT, $FONT_SIZE)
 
 
